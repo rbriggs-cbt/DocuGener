@@ -21,7 +21,7 @@ DocuGener helps you create step-by-step documentation by automatically capturing
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- Python 3.8 or higher (Optional: to self compile)
 - Windows 10+ (for window detection features)
 
 ### Installation
