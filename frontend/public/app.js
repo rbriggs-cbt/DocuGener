@@ -85,7 +85,7 @@ async function loadCaptures() {
         }
     } catch (error) {
         console.error('Error loading captures:', error);
-        console.error('Make sure you are accessing http://localhost:5100 (not port 5000)');
+        console.error('Make sure you are accessing http://localhost:5000');
     }
 }
 
@@ -500,7 +500,7 @@ async function handleLoadProject(projectId) {
             updateProjectDisplay();
             
             // Force reload captures from server
-            // Use a small delay to ensure backend has finished processing
+            // Use a small delay to ensure the app has finished processing
             setTimeout(() => {
                 loadCaptures();
             }, 100);

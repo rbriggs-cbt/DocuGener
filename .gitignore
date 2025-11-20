@@ -8,24 +8,30 @@ env/
 venv/
 ENV/
 .venv
+app/venv/
 *.egg-info/
 dist/
 build/
+app/build/
+# Track app/dist/ for distribution (executable and documentation)
+# app/dist/ - Now tracked for releases
+
+# PyInstaller
+*.spec.bak
+*.spec~
+*.manifest
+*.log
 
 # Node
 node_modules/
 npm-debug.log
 yarn-error.log
 
-# Captures
-backend/captures/*.png
-backend/captures/*.jpg
-backend/captures/metadata.json
-backend/captures/project_*/
-
-# Database
-backend/projects.db
-backend/*.db
+# Captures & runtime data
+captures/
+projects.db
+app/projects.db
+app/captures/
 
 # IDE
 .vscode/
