@@ -22,20 +22,35 @@ app.use('/api', async (req, res) => {
     // req.path includes the full path, so for /api/captures, req.path is /captures
     // We need to add /api back when forwarding
     const backendPath = `/api${req.path}`;
+    
+    // Determine response type based on endpoint
+    let responseType = 'json';
+    if (req.path.includes('/captures/') && req.method === 'GET' && !req.path.endsWith('/context')) {
+      responseType = 'arraybuffer'; // Image files
+    } else if (req.path === '/export' && req.method === 'POST') {
+      responseType = 'arraybuffer'; // Export files (PDF/PPTX)
+    }
+    
     const response = await axios({
       method: req.method,
       url: `${BACKEND_URL}${backendPath}`,
       data: req.body,
       params: req.query,
-      responseType: req.path.includes('/captures/') && req.method === 'GET' && !req.path.endsWith('/context') 
-        ? 'arraybuffer' 
-        : 'json',
+      responseType: responseType,
     });
     
-    if (response.data instanceof Buffer) {
-      res.set('Content-Type', 'image/png');
-      res.send(response.data);
+    // Handle binary responses (images, exports)
+    if (responseType === 'arraybuffer') {
+      // Copy headers from backend response
+      if (response.headers['content-type']) {
+        res.set('Content-Type', response.headers['content-type']);
+      }
+      if (response.headers['content-disposition']) {
+        res.set('Content-Disposition', response.headers['content-disposition']);
+      }
+      res.send(Buffer.from(response.data));
     } else {
+      // Handle JSON responses
       res.json(response.data);
     }
   } catch (error) {

@@ -21,6 +21,11 @@ yarn-error.log
 backend/captures/*.png
 backend/captures/*.jpg
 backend/captures/metadata.json
+backend/captures/project_*/
+
+# Database
+backend/projects.db
+backend/*.db
 
 # IDE
 .vscode/

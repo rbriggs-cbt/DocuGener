@@ -20,6 +20,8 @@
                     <span id="statusText">Recording</span>
                 </div>
                 <button class="pause-btn" id="pauseBtn">Pause</button>
+                <button class="clear-btn" id="clearBtn">Clear All</button>
+                <button class="projects-btn" id="projectsBtn">Projects</button>
                 <button class="export-btn" id="exportBtn">Export</button>
             </div>
         </div>
@@ -51,13 +53,54 @@
             </div>
         </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <h1>Captured Screenshots</h1>
-            <div id="capturesContainer" class="captures-container">
-                <p class="empty-message">No captures yet. Start clicking to capture screenshots!</p>
+        <!-- Projects Modal -->
+        <div class="modal" id="projectsModal" style="display: none;">
+            <div class="modal-content projects-modal">
+                <h3>Project Management</h3>
+                <div class="projects-section">
+                    <div class="projects-header">
+                        <button class="new-project-btn" id="newProjectBtn">New Project</button>
+                    </div>
+                    <div id="projectsList" class="projects-list"></div>
+                </div>
+                <div class="modal-buttons">
+                    <button class="cancel-btn" id="closeProjectsBtn">Close</button>
+                </div>
             </div>
         </div>
+
+        <!-- New Project Modal -->
+        <div class="modal" id="newProjectModal" style="display: none;">
+            <div class="modal-content">
+                <h3>Create New Project</h3>
+                <div class="form-group">
+                    <label for="projectName">Project Name:</label>
+                    <input type="text" id="projectName" class="form-input" placeholder="Enter project name" />
+                </div>
+                <div class="form-group">
+                    <label for="projectDescription">Description (optional):</label>
+                    <textarea id="projectDescription" class="form-input" rows="3" placeholder="Enter project description"></textarea>
+                </div>
+                <div class="modal-buttons">
+                    <button class="cancel-btn" id="cancelNewProjectBtn">Cancel</button>
+                    <button class="confirm-btn" id="createProjectBtn">Create</button>
+                </div>
+            </div>
+        </div>
+
+                <!-- Main Content -->
+                <div class="main-content">
+                    <div class="project-header">
+                        <h1>Captured Screenshots</h1>
+                        <div id="currentProjectName" class="current-project" style="display: none;">
+                            <span class="project-label">Project:</span>
+                            <span id="projectNameDisplay" class="project-name-display"></span>
+                        </div>
+                    </div>
+                    <div id="capturesContainer" class="captures-container">
+                        <p class="empty-message">No captures yet. Start clicking to capture screenshots!</p>
+                    </div>
+                </div>
     </div>
 
     <script src="app.js"></script>

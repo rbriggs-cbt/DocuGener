@@ -3,12 +3,14 @@ Flask API server for DocuGener.
 Provides REST endpoints for captures, context updates, export, and pause/resume.
 """
 import os
+import sqlite3
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 from image_manager import ImageManager
-from reportlab.lib.pagesizes import letter
+from project_manager import ProjectManager
+from reportlab.lib.pagesizes import letter, landscape
 from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image as RLImage
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image as RLImage, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER
 from pptx import Presentation
@@ -21,6 +23,7 @@ CORS(app, resources={r"/api/*": {"origins": "*", "methods": ["GET", "POST", "DEL
 
 # Global state
 image_manager = ImageManager()
+project_manager = ProjectManager()
 is_paused = False
 
 
@@ -83,6 +86,104 @@ def get_status():
     return jsonify({'paused': is_paused})
 
 
+@app.route('/api/clear-all', methods=['POST'])
+def clear_all():
+    """Clear all captures from current session."""
+    try:
+        # Delete all image files
+        captures = image_manager.get_all_captures()
+        for capture in captures:
+            image_path = image_manager.get_image_path(capture['id'])
+            if image_path and os.path.exists(image_path):
+                try:
+                    os.remove(image_path)
+                except:
+                    pass
+        
+        # Clear metadata
+        image_manager._save_metadata([])
+        
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/projects', methods=['GET'])
+def list_projects():
+    """List all saved projects."""
+    projects = project_manager.list_projects()
+    return jsonify(projects)
+
+
+@app.route('/api/projects', methods=['POST'])
+def create_project():
+    """Create a new project."""
+    data = request.get_json()
+    name = data.get('name', 'Untitled Project')
+    description = data.get('description', '')
+    
+    try:
+        project_id = project_manager.create_project(name, description)
+        return jsonify({'id': project_id, 'success': True})
+    except sqlite3.IntegrityError:
+        return jsonify({'error': 'Project name already exists'}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/projects/<int:project_id>', methods=['GET'])
+def get_project(project_id):
+    """Get a project by ID."""
+    project = project_manager.get_project(project_id)
+    if project:
+        return jsonify(project)
+    return jsonify({'error': 'Project not found'}), 404
+
+
+@app.route('/api/projects/<int:project_id>', methods=['PUT'])
+def update_project(project_id):
+    """Update a project."""
+    data = request.get_json()
+    name = data.get('name')
+    description = data.get('description')
+    
+    if project_manager.update_project(project_id, name, description):
+        return jsonify({'success': True})
+    return jsonify({'error': 'Project not found'}), 404
+
+
+@app.route('/api/projects/<int:project_id>', methods=['DELETE'])
+def delete_project(project_id):
+    """Delete a project."""
+    if project_manager.delete_project(project_id):
+        return jsonify({'success': True})
+    return jsonify({'error': 'Project not found'}), 404
+
+
+@app.route('/api/projects/<int:project_id>/save', methods=['POST'])
+def save_to_project(project_id):
+    """Save current captures to a project."""
+    try:
+        if project_manager.save_project(project_id, image_manager):
+            return jsonify({'success': True})
+        return jsonify({'error': 'Failed to save project'}), 500
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/projects/<int:project_id>/load', methods=['POST'])
+def load_project(project_id):
+    """Load a project's captures into current session."""
+    try:
+        if project_manager.load_project(project_id, image_manager):
+            # Return updated captures list
+            captures = image_manager.get_all_captures()
+            return jsonify({'success': True, 'captures': captures})
+        return jsonify({'error': 'Failed to load project'}), 500
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/api/export', methods=['POST'])
 def export():
     """Export captures to PowerPoint or PDF."""
@@ -118,15 +219,48 @@ def export_to_pptx(capture_ids):
         if not image_path or not os.path.exists(image_path):
             continue
         
-        # Create slide with title
-        slide = prs.slides.add_slide(prs.slide_layouts[5])  # Blank layout
+        # Create slide with completely blank layout
+        # Find the blankest layout available (one with no placeholders)
+        blank_layout = None
+        for layout in prs.slide_layouts:
+            if len(layout.placeholders) == 0:
+                blank_layout = layout
+                break
         
-        # Add image
+        # If no completely blank layout found, use layout 5 (blank)
+        if blank_layout is None:
+            blank_layout = prs.slide_layouts[5]  # Layout 5 is typically blank
+        
+        slide = prs.slides.add_slide(blank_layout)
+        
+        # Remove any placeholders that might exist to ensure completely blank slide
+        # Collect shapes to remove first (can't modify while iterating)
+        shapes_to_remove = []
+        for shape in slide.shapes:
+            if shape.is_placeholder:
+                shapes_to_remove.append(shape)
+        
+        # Remove placeholder shapes
+        for shape in shapes_to_remove:
+            try:
+                sp = shape.element
+                parent = sp.getparent()
+                if parent is not None:
+                    parent.remove(sp)
+            except:
+                # If XML removal fails, try alternative method
+                try:
+                    slide.shapes._spTree.remove(shape.element)
+                except:
+                    pass  # Continue if removal fails
+        
+        # Add image - use absolute path
+        abs_image_path = os.path.abspath(image_path)
         left = Inches(0.5)
         top = Inches(1)
         width = Inches(9)
         height = Inches(5)
-        slide.shapes.add_picture(image_path, left, top, width, height)
+        slide.shapes.add_picture(abs_image_path, left, top, width, height)
         
         # Add text box for context
         if capture.get('context'):
@@ -172,7 +306,9 @@ def export_to_pdf(capture_ids):
     temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.pdf')
     temp_file.close()
     
-    doc = SimpleDocTemplate(temp_file.name, pagesize=letter)
+    # Use landscape orientation
+    from reportlab.lib.pagesizes import landscape, letter
+    doc = SimpleDocTemplate(temp_file.name, pagesize=landscape(letter))
     story = []
     styles = getSampleStyleSheet()
     
@@ -203,8 +339,26 @@ def export_to_pdf(capture_ids):
             story.append(Paragraph(title_text, styles['Heading2']))
             story.append(Spacer(1, 0.2*inch))
         
-        # Add image
-        img = RLImage(image_path, width=7*inch, height=5*inch)
+        # Add image - use absolute path and handle PIL Image
+        from PIL import Image as PILImage
+        abs_image_path = os.path.abspath(image_path)
+        
+        # Open and potentially resize image to fit landscape page
+        pil_img = PILImage.open(abs_image_path)
+        img_width, img_height = pil_img.size
+        aspect_ratio = img_width / img_height
+        
+        # Calculate dimensions maintaining aspect ratio for landscape (10.5 x 8 inches)
+        max_width = 9.5 * inch
+        max_height = 6 * inch
+        if aspect_ratio > (max_width / max_height):
+            width = max_width
+            height = max_width / aspect_ratio
+        else:
+            height = max_height
+            width = max_height * aspect_ratio
+        
+        img = RLImage(abs_image_path, width=width, height=height)
         story.append(img)
         story.append(Spacer(1, 0.2*inch))
         
@@ -212,7 +366,8 @@ def export_to_pdf(capture_ids):
         if capture.get('context'):
             story.append(Paragraph(capture['context'], context_style))
         
-        story.append(Spacer(1, 0.5*inch))
+        # Add page break after each capture (one per page)
+        story.append(PageBreak())
     
     doc.build(story)
     
