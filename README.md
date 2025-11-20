@@ -114,6 +114,14 @@ The executable will be created at `app/dist/DocuGener.exe` (Windows) or `app/dis
 
 See [Build Instructions](docs/BUILD_INSTRUCTIONS.md) for detailed information.
 
+### Download Pre-built Executable
+
+📦 **Download the latest release:**
+- [Download DocuGener.exe](app/dist/) - Portable Windows executable
+- [Quick Start Guide](app/dist/HOW_TO_USE.txt) - Instructions for using the executable
+
+The executable is self-contained and requires no Python installation. Simply download, run, and open `http://localhost:5000` in your browser.
+
 ## Documentation
 
 Comprehensive documentation is available in the `docs/` folder:
