@@ -1,5 +1,5 @@
 """
-Main entry point for DocuGener backend.
+Main entry point for the DocuGener application.
 Initializes click detector, screen capture, and API server.
 """
 import threading
@@ -55,11 +55,10 @@ def on_click_detected(x, y):
 
 def main():
     """Main function to start the application."""
-    print("Starting DocuGener Backend...")
+    print("Starting DocuGener...")
     print("Click detection is active. Press Ctrl+Click to capture screenshots.")
     print("Press Ctrl+C to stop.")
-    print("API server running on http://localhost:5000")
-    print("Make sure to access the web interface at http://localhost:5100 (Node.js frontend)")
+    print("Web interface available at http://localhost:5000")
     
     # Initialize click detector
     click_detector = ClickDetector(on_click_detected)

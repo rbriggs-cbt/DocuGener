@@ -20,12 +20,6 @@ All dependencies used in DocuGener are open-source and compatible with MIT Licen
 - **python-pptx** (0.6.23) - MIT
 - **reportlab** (4.0.7) - BSD-3-Clause
 
-### Node.js Dependencies
-
-- **express** (4.18.2) - MIT
-- **cors** (2.8.5) - MIT
-- **axios** (1.6.2) - MIT
-
 ## License Compatibility
 
 All dependencies are compatible with the MIT License:

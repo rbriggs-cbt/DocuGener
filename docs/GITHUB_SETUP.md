@@ -35,13 +35,13 @@ Features:
 - Visual pointer highlight overlay
 - Context text input for each capture
 - Minimizable control interface
-- RESTful API backend (Flask)
-- Modern web frontend (Node.js/Express)
+- Flask service (REST API + static UI)
+- Modern web frontend (served by Flask)
 - Full documentation suite
 
 Tech Stack:
-- Backend: Python 3.8+, Flask, pynput, pyautogui, pywin32
-- Frontend: Node.js 14+, Express, Vanilla JavaScript
+- App service: Python 3.8+, Flask, pynput, pyautogui, pywin32
+- Frontend: Vanilla JavaScript, HTML5, CSS3 (served by Flask)
 - Export: python-pptx, reportlab"
 ```
 
@@ -69,7 +69,7 @@ Replace `YOUR_USERNAME` with your GitHub username.
 Use this description when creating the repository:
 
 ```
-Screen capture and documentation tool that automatically captures screenshots on Ctrl+Click with pointer highlights, organizes them in a web interface, and exports to PowerPoint or PDF. Built with Python (Flask) and Node.js (Express).
+Screen capture and documentation tool that automatically captures screenshots on Ctrl+Click with pointer highlights, organizes them in a web interface, and exports to PowerPoint or PDF. Built with Python (Flask).
 ```
 
 ## Topics/Tags for GitHub
@@ -79,8 +79,6 @@ Suggested topics to add to your repository:
 - `documentation-tool`
 - `python`
 - `flask`
-- `nodejs`
-- `express`
 - `screenshot`
 - `presentation`
 - `automation`

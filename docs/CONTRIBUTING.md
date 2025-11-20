@@ -18,7 +18,7 @@ Thank you for your interest in contributing to DocuGener! This document provides
    - Clear title and description
    - Steps to reproduce
    - Expected vs actual behavior
-   - System information (OS, Python version, Node version)
+   - System information (OS, Python version)
 
 ### Suggesting Features
 
@@ -43,7 +43,7 @@ Thank you for your interest in contributing to DocuGener! This document provides
 
 4. **Test your changes**
    - Test on Windows 10+
-   - Verify both backend and frontend work
+   - Verify the application works correctly
    - Test edge cases
 
 5. **Commit your changes**
@@ -78,7 +78,7 @@ Thank you for your interest in contributing to DocuGener! This document provides
 
 ## Development Setup
 
-See [Development Guide](documentation/development.md) for detailed setup instructions.
+See [Development Guide](development.md) for detailed setup instructions.
 
 ## Areas for Contribution
 

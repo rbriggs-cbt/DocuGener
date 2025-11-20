@@ -2,27 +2,46 @@
 Image manager for storing captures with metadata.
 """
 import os
+import sys
 import json
 from datetime import datetime
 from PIL import Image
 from typing import List, Dict, Optional
 
 
+def get_app_data_dir():
+    """Get the application data directory for storing captures.
+    When running from exe, use directory next to exe. Otherwise use project root."""
+    if getattr(sys, 'frozen', False):
+        # Running as compiled exe
+        exe_dir = os.path.dirname(sys.executable)
+        return os.path.join(exe_dir, "captures")
+    else:
+        # Running as script
+        app_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(app_dir)
+        return os.path.join(project_root, "captures")
+
+
 class ImageManager:
     """Manages storage and retrieval of captured images with metadata."""
     
-    def __init__(self, storage_dir: str = "captures"):
+    def __init__(self, storage_dir: str = None):
         """
         Initialize image manager.
         
         Args:
-            storage_dir: Directory to store captures
+            storage_dir: Directory to store captures (defaults to app data directory)
         """
-        self.storage_dir = storage_dir
-        self.metadata_file = os.path.join(storage_dir, "metadata.json")
+        if storage_dir is None:
+            storage_dir = get_app_data_dir()
+        
+        # Convert to absolute path
+        self.storage_dir = os.path.abspath(storage_dir)
+        self.metadata_file = os.path.join(self.storage_dir, "metadata.json")
         
         # Create storage directory if it doesn't exist
-        os.makedirs(storage_dir, exist_ok=True)
+        os.makedirs(self.storage_dir, exist_ok=True)
         
         # Initialize metadata file if it doesn't exist
         if not os.path.exists(self.metadata_file):

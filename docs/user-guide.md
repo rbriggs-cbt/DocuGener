@@ -10,50 +10,32 @@ DocuGener is a screen capture and documentation tool that helps you create step-
 
 Download and install Python 3.8 or higher from [python.org](https://www.python.org/downloads/)
 
-### Step 2: Install Node.js
-
-Download and install Node.js 14 or higher from [nodejs.org](https://nodejs.org/)
-
-### Step 3: Set Up DocuGener
+### Step 2: Set Up DocuGener
 
 1. Download or clone the DocuGener repository
 2. Open a terminal/command prompt
 
-**Backend Setup:**
+**Setup:**
 ```bash
-cd DocuGener/backend
+cd DocuGener/app
 python -m venv venv
 venv\Scripts\activate  # Windows
 pip install -r requirements.txt
-```
-
-**Frontend Setup:**
-```bash
-cd DocuGener/frontend
-npm install
 ```
 
 ## Getting Started
 
 ### Starting the Application
 
-1. **Start the Backend:**
+1. **Start DocuGener:**
    ```bash
-   cd backend
+   cd app
    python main.py
    ```
-   You should see: "Starting DocuGener Backend..."
+   You should see: "Starting DocuGener..." and "Web interface available at http://localhost:5000"
 
-2. **Start the Frontend:**
-   Open a new terminal window:
-   ```bash
-   cd frontend
-   npm start
-   ```
-   You should see: "Frontend server running on http://localhost:5100"
-
-3. **Open in Browser:**
-   Navigate to `http://localhost:5100` in your web browser
+2. **Open in Browser:**
+   Navigate to `http://localhost:5000` in your web browser
 
 ## Using DocuGener
 
@@ -122,19 +104,19 @@ The control panel at the top of the interface provides:
 ### Keyboard Shortcuts
 
 - **Ctrl+Click**: Capture screenshot
-- **Ctrl+C**: Stop the backend (in terminal)
+- **Ctrl+C**: Stop DocuGener (in terminal)
 
 ### Troubleshooting
 
 **Captures not appearing:**
-- Ensure both backend and frontend servers are running
-- Check that you're accessing `http://localhost:5100` (not 5000)
+- Ensure the DocuGener service is running
+- Check that you're accessing `http://localhost:5000`
 - Refresh the browser page
 
 **Screenshots not capturing:**
 - Ensure you're using **Ctrl+Click** (not just Click)
 - Check that capture is not paused
-- Verify backend is running and shows "Click detection is active"
+- Verify the app is running and shows "Click detection is active"
 
 **Export not working:**
 - Ensure you have at least one capture
@@ -154,16 +136,18 @@ Currently, capture requires Ctrl+Click. This prevents accidental captures during
 ### Storage Location
 
 Captures are stored in:
-- **Images**: `backend/captures/*.png`
-- **Metadata**: `backend/captures/metadata.json`
+- **Images**: `captures/*.png` (in project root)
+- **Metadata**: `captures/metadata.json`
+- **Projects**: `projects.db` (in project root)
 
-You can manually backup this folder to preserve your captures.
+You can manually backup the `captures/` folder and `projects.db` file to preserve your data.
 
 ### Multiple Sessions
 
 Each time you start DocuGener, new captures are added to the existing collection. To start fresh, you can:
-1. Delete all files in `backend/captures/` (except `metadata.json` if you want to keep structure)
-2. Or manually edit `metadata.json` to remove entries
+1. Delete all PNG files in `captures/` (keep `metadata.json` if you want to preserve structure)
+2. Or manually edit `captures/metadata.json` to remove entries
+3. Or delete `projects.db` to remove all project data
 
 ## Support
 
@@ -178,7 +162,7 @@ For issues, questions, or contributions:
 A: The window detection features are Windows-specific. The core functionality may work, but window titles and URLs may not be detected.
 
 **Q: Can I change the capture hotkey?**
-A: Currently, Ctrl+Click is hardcoded. This can be modified in `backend/click_detector.py` for future versions.
+A: Currently, Ctrl+Click is hardcoded. This can be modified in `app/click_detector.py` for future versions.
 
 **Q: How do I share my documentation?**
 A: Export to PowerPoint or PDF, then share the file. The exported files are standalone and don't require DocuGener to view.

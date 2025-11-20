@@ -5,7 +5,6 @@
 ### Prerequisites
 
 - Python 3.8 or higher
-- Node.js 14 or higher
 - Windows 10+ (for window detection features)
 - Git
 
@@ -17,64 +16,62 @@
    cd DocuGener
    ```
 
-2. **Set up Python backend**
+2. **Set up Python environment**
    ```bash
-   cd backend
+   cd app
    python -m venv venv
    venv\Scripts\activate  # Windows
    pip install -r requirements.txt
-   ```
-
-3. **Set up Node.js frontend**
-   ```bash
-   cd frontend
-   npm install
    ```
 
 ## Project Structure
 
 ```
 DocuGener/
-├── backend/
-│   ├── api_server.py          # Flask API server
+├── app/                       # Application code
+│   ├── api_server.py          # Flask server & API endpoints
 │   ├── click_detector.py      # Mouse click detection
-│   ├── image_manager.py        # Image storage management
-│   ├── main.py                # Entry point
+│   ├── image_manager.py       # Image storage management
+│   ├── main.py                # Application entry point
+│   ├── project_manager.py     # Project database management
 │   ├── screen_capture.py      # Screenshot capture
 │   ├── window_info.py         # Window title/URL detection
 │   ├── requirements.txt       # Python dependencies
-│   └── captures/              # Storage directory (gitignored)
-├── frontend/
-│   ├── server.js              # Express server
-│   ├── package.json           # Node.js dependencies
+│   ├── DocuGener.spec         # PyInstaller build configuration
+│   └── venv/                  # Local virtual environment (gitignored)
+├── captures/                  # Runtime data (gitignored)
+│   └── metadata.json          # Capture metadata
+├── docs/                      # Documentation
+│   ├── architecture.md        # System architecture
+│   ├── api-reference.md       # API documentation
+│   ├── BUILD_INSTRUCTIONS.md  # Build executable guide
+│   ├── CONTRIBUTING.md        # Contribution guidelines
+│   ├── development.md         # This file
+│   ├── user-guide.md          # User manual
+│   └── ...
+├── frontend/                  # Web UI
 │   └── public/
 │       ├── index.html         # Main HTML
 │       ├── app.js             # Frontend JavaScript
 │       └── styles.css         # Styling
-├── documentation/             # Documentation files
+├── scripts/                   # Build scripts
+│   ├── build_exe.bat          # Windows build script
+│   └── build_exe.sh           # Linux/macOS build script
 ├── README.md                  # Main readme
-└── .gitignore                # Git ignore rules
+├── LICENSE                    # MIT License
+└── .gitignore                 # Git ignore rules
 ```
 
 ## Running in Development
 
-### Backend
+### Running the Application
 
 ```bash
-cd backend
+cd app
 python main.py
 ```
 
-The backend will start on `http://localhost:5000`
-
-### Frontend
-
-```bash
-cd frontend
-npm start
-```
-
-The frontend will start on `http://localhost:5100`
+The application will start on `http://localhost:5000` and serve both the API and web interface.
 
 ## Development Workflow
 
@@ -100,13 +97,13 @@ The frontend will start on `http://localhost:5100`
 ## Testing
 
 Currently, manual testing is used. Future improvements:
-- Unit tests for backend components
+- Unit tests for app components
 - Integration tests for API endpoints
 - Frontend testing with Jest
 
 ## Debugging
 
-### Backend
+### App Service
 - Check console output for error messages
 - Use Python debugger (`pdb`) for breakpoints
 - Check Flask logs for API errors
@@ -124,7 +121,7 @@ Currently, manual testing is used. Future improvements:
 - Verify screen resolution settings
 
 ### API requests fail
-- Ensure backend is running on port 5000
+- Ensure the app service is running on port 5000
 - Check CORS settings
 - Verify frontend is accessing correct URL
 
@@ -135,8 +132,8 @@ Currently, manual testing is used. Future improvements:
 
 ## Adding New Features
 
-1. **Backend Feature**
-   - Add new module in `backend/`
+1. **App Feature**
+   - Add new module in `app/`
    - Update `api_server.py` if API endpoint needed
    - Update `main.py` if initialization needed
    - Update `requirements.txt` if new dependency
@@ -156,9 +153,8 @@ Currently, the application runs in development mode. For production:
 
 1. Set `debug=False` in Flask app
 2. Use production WSGI server (e.g., Gunicorn)
-3. Use production Node.js server (e.g., PM2)
-4. Set up proper error logging
-5. Configure environment variables
+3. Set up proper error logging
+4. Configure environment variables
 
 ## Contributing
 

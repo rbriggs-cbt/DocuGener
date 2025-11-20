@@ -11,17 +11,44 @@ from typing import List, Dict, Optional
 from image_manager import ImageManager
 
 
+def _get_project_captures_dir():
+    """Get the absolute path to the captures directory.
+    When running from exe, use directory next to exe. Otherwise use project root."""
+    import sys
+    if getattr(sys, 'frozen', False):
+        # Running as compiled exe
+        exe_dir = os.path.dirname(sys.executable)
+        return os.path.join(exe_dir, "captures")
+    else:
+        # Running as script
+        app_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(app_dir)
+        return os.path.join(project_root, "captures")
+
+
 class ProjectManager:
     """Manages project storage and retrieval using SQLite."""
     
-    def __init__(self, db_path: str = "projects.db"):
+    def __init__(self, db_path: str = None):
         """
         Initialize project manager.
         
         Args:
-            db_path: Path to SQLite database file
+            db_path: Path to SQLite database file (defaults to next to exe or project root)
         """
-        self.db_path = db_path
+        if db_path is None:
+            import sys
+            if getattr(sys, 'frozen', False):
+                # Running as compiled exe
+                exe_dir = os.path.dirname(sys.executable)
+                db_path = os.path.join(exe_dir, "projects.db")
+            else:
+                # Running as script from project root
+                project_root = os.path.dirname(os.path.abspath(__file__))
+                project_root = os.path.dirname(project_root)
+                db_path = os.path.join(project_root, "projects.db")
+
+        self.db_path = os.path.abspath(db_path)
         self._init_database()
     
     def _init_database(self):
@@ -152,7 +179,7 @@ class ProjectManager:
             }
         return None
     
-    def save_project(self, project_id: int, image_manager: ImageManager, captures_dir: str = "captures") -> bool:
+    def save_project(self, project_id: int, image_manager: ImageManager, captures_dir: str = None) -> bool:
         """
         Save current captures to a project.
         Copies image files to project-specific directory.
@@ -160,11 +187,16 @@ class ProjectManager:
         Args:
             project_id: Project ID to save to
             image_manager: ImageManager instance with current captures
-            captures_dir: Directory where capture images are stored
+            captures_dir: Directory where capture images are stored (defaults to project root/captures)
             
         Returns:
             True if successful
         """
+        if captures_dir is None:
+            captures_dir = _get_project_captures_dir()
+        else:
+            captures_dir = os.path.abspath(captures_dir)
+        
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
@@ -222,7 +254,7 @@ class ProjectManager:
         conn.close()
         return True
     
-    def load_project(self, project_id: int, image_manager: ImageManager, captures_dir: str = "captures") -> bool:
+    def load_project(self, project_id: int, image_manager: ImageManager, captures_dir: str = None) -> bool:
         """
         Load a project's captures into the current session.
         Restores metadata and copies image files back to main captures directory.
@@ -230,11 +262,16 @@ class ProjectManager:
         Args:
             project_id: Project ID to load
             image_manager: ImageManager instance to load captures into
-            captures_dir: Directory where capture images are stored
+            captures_dir: Directory where capture images are stored (defaults to project root/captures)
             
         Returns:
             True if successful
         """
+        if captures_dir is None:
+            captures_dir = _get_project_captures_dir()
+        else:
+            captures_dir = os.path.abspath(captures_dir)
+        
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
@@ -308,18 +345,23 @@ class ProjectManager:
         
         return True
     
-    def delete_project(self, project_id: int, captures_dir: str = "captures") -> bool:
+    def delete_project(self, project_id: int, captures_dir: str = None) -> bool:
         """
         Delete a project and all its captures.
         Also deletes the project's image directory.
         
         Args:
             project_id: Project ID to delete
-            captures_dir: Directory where capture images are stored
+            captures_dir: Directory where capture images are stored (defaults to project root/captures)
             
         Returns:
             True if successful
         """
+        if captures_dir is None:
+            captures_dir = _get_project_captures_dir()
+        else:
+            captures_dir = os.path.abspath(captures_dir)
+        
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         

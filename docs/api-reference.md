@@ -183,6 +183,177 @@ curl -X POST http://localhost:5000/api/export \
   --output presentation.pptx
 ```
 
+---
+
+### Get All Projects
+
+**GET** `/api/projects`
+
+Returns a list of all projects.
+
+**Response:**
+```json
+[
+  {
+    "id": 1,
+    "name": "My Project",
+    "created_at": "2025-11-19T21:54:20.506000"
+  }
+]
+```
+
+**Status Codes:**
+- `200 OK`: Success
+
+---
+
+### Create Project
+
+**POST** `/api/projects`
+
+Creates a new project.
+
+**Request Body:**
+```json
+{
+  "name": "My New Project"
+}
+```
+
+**Response:**
+```json
+{
+  "id": 1,
+  "name": "My New Project",
+  "created_at": "2025-11-19T21:54:20.506000"
+}
+```
+
+**Status Codes:**
+- `200 OK`: Success
+- `400 Bad Request`: Invalid request
+
+---
+
+### Get Project
+
+**GET** `/api/projects/<project_id>`
+
+Returns project details.
+
+**Parameters:**
+- `project_id` (path): Project ID
+
+**Response:**
+```json
+{
+  "id": 1,
+  "name": "My Project",
+  "created_at": "2025-11-19T21:54:20.506000"
+}
+```
+
+**Status Codes:**
+- `200 OK`: Success
+- `404 Not Found`: Project not found
+
+---
+
+### Update Project
+
+**PUT** `/api/projects/<project_id>`
+
+Updates project name.
+
+**Parameters:**
+- `project_id` (path): Project ID
+
+**Request Body:**
+```json
+{
+  "name": "Updated Project Name"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true
+}
+```
+
+**Status Codes:**
+- `200 OK`: Success
+- `404 Not Found`: Project not found
+
+---
+
+### Delete Project
+
+**DELETE** `/api/projects/<project_id>`
+
+Deletes a project and its associated captures.
+
+**Parameters:**
+- `project_id` (path): Project ID
+
+**Response:**
+```json
+{
+  "success": true
+}
+```
+
+**Status Codes:**
+- `200 OK`: Success
+- `404 Not Found`: Project not found
+
+---
+
+### Save Current Captures to Project
+
+**POST** `/api/projects/<project_id>/save`
+
+Saves all current captures to a project.
+
+**Parameters:**
+- `project_id` (path): Project ID
+
+**Response:**
+```json
+{
+  "success": true
+}
+```
+
+**Status Codes:**
+- `200 OK`: Success
+- `404 Not Found`: Project not found
+
+---
+
+### Load Project Captures
+
+**POST** `/api/projects/<project_id>/load`
+
+Loads all captures from a project into the current session.
+
+**Parameters:**
+- `project_id` (path): Project ID
+
+**Response:**
+```json
+{
+  "success": true,
+  "captures": [...]
+}
+```
+
+**Status Codes:**
+- `200 OK`: Success
+- `404 Not Found`: Project not found
+- `500 Internal Server Error`: Failed to load project
+
 ## Error Responses
 
 All error responses follow this format:
@@ -201,8 +372,8 @@ Common status codes:
 ## CORS
 
 The API supports CORS for localhost origins. All endpoints accept requests from:
-- `http://localhost:5100` (frontend)
-- `http://127.0.0.1:5100`
+- `http://localhost:5000` (web interface and API)
+- `http://127.0.0.1:5000`
 
 ## Rate Limiting
 

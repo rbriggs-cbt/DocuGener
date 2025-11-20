@@ -1,10 +1,12 @@
 """
 Flask API server for DocuGener.
 Provides REST endpoints for captures, context updates, export, and pause/resume.
+Also serves the frontend static files.
 """
 import os
+import sys
 import sqlite3
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, jsonify, request, send_file, send_from_directory
 from flask_cors import CORS
 from image_manager import ImageManager
 from project_manager import ProjectManager
@@ -18,7 +20,27 @@ from pptx.util import Inches
 import tempfile
 
 
-app = Flask(__name__)
+def get_resource_path(relative_path):
+    """Get absolute path to resource, works for dev and PyInstaller"""
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        # Running as script, use the actual file location
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        # Go up one level to project root
+        base_path = os.path.dirname(base_path)
+    return os.path.join(base_path, relative_path)
+
+
+# Get the base directory (app folder)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Get the project root directory (one level up from app)
+PROJECT_ROOT = os.path.dirname(BASE_DIR)
+# Frontend public directory - use resource path for PyInstaller compatibility
+FRONTEND_PUBLIC = get_resource_path('frontend/public')
+
+app = Flask(__name__, static_folder=None)  # We'll handle static files manually
 CORS(app, resources={r"/api/*": {"origins": "*", "methods": ["GET", "POST", "DELETE", "OPTIONS"]}})  # Enable CORS for frontend
 
 # Global state
@@ -379,6 +401,47 @@ def export_to_pdf(capture_ids):
     )
 
 
+# Serve static files (CSS, JS, images, etc.)
+# Only serve known static file extensions to avoid conflicts with API routes
+STATIC_EXTENSIONS = {'.css', '.js', '.html', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', '.woff', '.woff2', '.ttf', '.eot'}
+
+@app.route('/<path:filename>')
+def serve_static_or_spa(filename):
+    """Serve static files or index.html for SPA routing."""
+    # Don't serve API routes as static files
+    if filename.startswith('api/'):
+        return jsonify({'error': 'Not found'}), 404
+    
+    # Security: prevent directory traversal
+    if '..' in filename or filename.startswith('/'):
+        return jsonify({'error': 'Invalid path'}), 400
+    
+    # Check if it's a static file request
+    file_ext = os.path.splitext(filename)[1].lower()
+    if file_ext in STATIC_EXTENSIONS:
+        file_path = os.path.join(FRONTEND_PUBLIC, filename)
+        if os.path.exists(file_path) and os.path.isfile(file_path):
+            return send_from_directory(FRONTEND_PUBLIC, filename)
+    
+    # For SPA routing, serve index.html for any non-API, non-static-file route
+    index_path = os.path.join(FRONTEND_PUBLIC, 'index.html')
+    if os.path.exists(index_path):
+        return send_file(index_path)
+    return jsonify({'error': 'Frontend not found'}), 404
+
+
+# Serve index.html for root route
+@app.route('/')
+def serve_index():
+    """Serve the main index.html file for the SPA."""
+    index_path = os.path.join(FRONTEND_PUBLIC, 'index.html')
+    if os.path.exists(index_path):
+        return send_file(index_path)
+    return jsonify({'error': 'Frontend not found'}), 404
+
+
 if __name__ == '__main__':
+    print(f"Frontend files served from: {FRONTEND_PUBLIC}")
+    print(f"Server running on http://localhost:5000")
     app.run(port=5000, debug=True)
 
