@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocuGener - Screen Capture & Documentation Tool</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Control Interface -->
+        <div class="control-panel" id="controlPanel">
+            <div class="control-header">
+                <h2>DocuGener</h2>
+                <button class="minimize-btn" id="minimizeBtn">−</button>
+            </div>
+            <div class="control-content">
+                <div class="status-indicator">
+                    <span class="status-dot" id="statusDot"></span>
+                    <span id="statusText">Recording</span>
+                </div>
+                <button class="pause-btn" id="pauseBtn">Pause</button>
+                <button class="export-btn" id="exportBtn">Export</button>
+            </div>
+        </div>
+
+        <!-- Minimized Control Bar -->
+        <div class="minimized-bar" id="minimizedBar" style="display: none;">
+            <span>DocuGener</span>
+            <button class="restore-btn" id="restoreBtn">Restore</button>
+        </div>
+
+        <!-- Export Modal -->
+        <div class="modal" id="exportModal" style="display: none;">
+            <div class="modal-content">
+                <h3>Export Options</h3>
+                <div class="export-options">
+                    <label>
+                        <input type="radio" name="exportFormat" value="pptx" checked>
+                        PowerPoint (.pptx)
+                    </label>
+                    <label>
+                        <input type="radio" name="exportFormat" value="pdf">
+                        PDF
+                    </label>
+                </div>
+                <div class="modal-buttons">
+                    <button class="cancel-btn" id="cancelExportBtn">Cancel</button>
+                    <button class="confirm-btn" id="confirmExportBtn">Export</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h1>Captured Screenshots</h1>
+            <div id="capturesContainer" class="captures-container">
+                <p class="empty-message">No captures yet. Start clicking to capture screenshots!</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
