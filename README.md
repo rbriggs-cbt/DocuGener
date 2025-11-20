@@ -117,8 +117,12 @@ See [Build Instructions](docs/BUILD_INSTRUCTIONS.md) for detailed information.
 ### Download Pre-built Executable
 
 📦 **Download the latest release:**
-- [Download DocuGener.exe](app/dist/) - Portable Windows executable
-- [Quick Start Guide](app/dist/HOW_TO_USE.txt) - Instructions for using the executable
+
+**Direct Download Links (Right-click → Save As, or use the links):**
+- [Download DocuGener.exe](https://raw.githubusercontent.com/rbriggs-cbt/DocuGener/nightly/app/dist/DocuGener.exe) - Portable Windows executable (75 MB)
+- [Download HOW_TO_USE.txt](https://raw.githubusercontent.com/rbriggs-cbt/DocuGener/nightly/app/dist/HOW_TO_USE.txt) - Quick start guide
+
+**Alternative:** Browse the [app/dist/](app/dist/) folder and right-click on `DocuGener.exe` → "Save link as..." to download.
 
 The executable is self-contained and requires no Python installation. Simply download, run, and open `http://localhost:5000` in your browser.
 
