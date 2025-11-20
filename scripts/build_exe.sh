@@ -7,18 +7,34 @@ echo "Building DocuGener Executable"
 echo "========================================"
 echo ""
 
-# Check if we're in the right directory
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Go up one level to get project root (scripts/ -> project root)
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# Change to project root
+cd "$PROJECT_ROOT"
+
+# Check if we found the right directory
 if [ ! -f "app/main.py" ]; then
-    echo "Error: This script must be run from the project root directory"
+    echo "Error: Could not find project root directory"
+    echo "Expected: $PROJECT_ROOT/app/main.py"
+    echo "Current directory: $(pwd)"
     exit 1
 fi
+
+echo "Project root: $PROJECT_ROOT"
+echo ""
+
+# Ensure we're in project root
+cd "$PROJECT_ROOT"
 
 # Check if virtual environment exists
 if [ ! -d "app/venv" ]; then
     echo "Creating virtual environment..."
     cd app
     python3 -m venv venv
-    cd ..
+    cd "$PROJECT_ROOT"
 fi
 
 # Activate virtual environment
@@ -46,7 +62,7 @@ if [ $? -eq 0 ]; then
     echo "Build successful!"
     echo "========================================"
     echo ""
-    echo "Executable location: app/dist/DocuGener"
+    echo "Executable location: $PROJECT_ROOT/app/dist/DocuGener"
     echo ""
     echo "You can now distribute DocuGener to users."
     echo "The executable is portable and doesn't require Python."
@@ -61,5 +77,5 @@ else
     echo ""
 fi
 
-cd ..
+cd "$PROJECT_ROOT"
 

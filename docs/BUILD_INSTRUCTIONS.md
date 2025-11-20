@@ -12,12 +12,20 @@ This guide explains how to build a single portable executable file that users ca
 
 ### Windows
 
-1. **Run the build script:**
+1. **Run the build script from anywhere:**
    ```batch
+   # From project root:
    scripts\build_exe.bat
+   
+   # Or from scripts directory:
+   cd scripts
+   .\build_exe.bat
    ```
 
+   The script automatically detects the project root, so it works from any directory.
+
    This script will:
+   - Automatically find the project root directory
    - Create a virtual environment if needed
    - Install all dependencies including PyInstaller
    - Build the executable using the spec file
@@ -25,10 +33,17 @@ This guide explains how to build a single portable executable file that users ca
 
 ### Linux/macOS
 
-1. **Run the build script:**
+1. **Run the build script from anywhere:**
    ```bash
+   # From project root:
    ./scripts/build_exe.sh
+   
+   # Or from scripts directory:
+   cd scripts
+   ./build_exe.sh
    ```
+
+   The script automatically detects the project root, so it works from any directory.
 
    This will create the executable at `app/dist/DocuGener`
 
