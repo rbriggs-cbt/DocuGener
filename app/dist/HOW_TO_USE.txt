@@ -1,0 +1,140 @@
+================================================================================
+                    DocuGener - Quick Start Guide
+================================================================================
+
+Thank you for downloading DocuGener! This guide will help you get started
+with the portable executable version.
+
+================================================================================
+QUICK START
+================================================================================
+
+1. Double-click DocuGener.exe to start the application
+2. Open your web browser and go to: http://localhost:5000
+3. Press Ctrl+Click anywhere on your screen to capture screenshots
+4. Use the web interface to organize and export your captures
+
+================================================================================
+DETAILED USAGE
+================================================================================
+
+STARTING THE APPLICATION
+------------------------
+- Simply double-click DocuGener.exe
+- A command window will appear - keep it open while using DocuGener
+- The application will start automatically
+- You'll see: "Web interface available at http://localhost:5000"
+
+ACCESSING THE WEB INTERFACE
+----------------------------
+- Open any web browser (Chrome, Firefox, Edge, etc.)
+- Navigate to: http://localhost:5000
+- The DocuGener interface will load automatically
+
+CAPTURING SCREENSHOTS
+---------------------
+1. Make sure the status shows "Recording" (green indicator)
+2. Press and hold the Ctrl key
+3. Left-click anywhere on your screen
+4. A screenshot will be captured with a red pointer highlight
+5. The capture will appear in the web interface automatically
+
+MANAGING YOUR CAPTURES
+-----------------------
+- View all captures in chronological order
+- Add descriptions: Type in the text box below each image
+- Delete captures: Click the trash icon (🗑️) on any capture
+- Pause/Resume: Use the control panel buttons to stop/start capturing
+
+EXPORTING YOUR DOCUMENTATION
+----------------------------
+1. Click the "Export" button in the control panel
+2. Choose your format:
+   - PowerPoint (.pptx) - Creates a presentation
+   - PDF - Creates a PDF document
+3. Click "Export" and the file will download to your Downloads folder
+
+PROJECT MANAGEMENT
+------------------
+- Create projects to organize different documentation sets
+- Save current captures to a project
+- Load previous projects to continue working
+- Switch between projects easily
+
+================================================================================
+TIPS
+================================================================================
+
+✓ Plan your documentation steps before starting
+✓ Add clear descriptions to each capture
+✓ Use the pause feature when you need to set up your screen
+✓ Export regularly to save your work
+✓ The application creates a "captures" folder in the same directory
+  where screenshots are stored
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+Problem: Browser shows "This site can't be reached"
+Solution: Make sure DocuGener.exe is running and the command window is open
+
+Problem: Screenshots not capturing
+Solution: 
+- Check that status shows "Recording" (green)
+- Make sure you're pressing Ctrl+Click (not just Click)
+- Try pausing and resuming capture
+
+Problem: Can't see the web interface
+Solution:
+- Make sure you're going to http://localhost:5000 (not https://)
+- Try refreshing the page
+- Check that no firewall is blocking the connection
+
+Problem: Export not working
+Solution:
+- Make sure you have at least one capture
+- Check your browser's download settings
+- Try a different export format
+
+================================================================================
+SYSTEM REQUIREMENTS
+================================================================================
+
+- Windows 10 or later
+- No Python installation required (all dependencies included)
+- Any modern web browser
+- Administrator privileges may be required for some screen capture features
+
+================================================================================
+DATA STORAGE
+================================================================================
+
+DocuGener stores your data in the following locations (relative to DocuGener.exe):
+
+- captures/          - All screenshot images
+- captures/metadata.json - Capture information
+- projects.db        - Project database
+
+You can backup these files to save your work.
+
+================================================================================
+SUPPORT
+================================================================================
+
+For more detailed documentation, visit the project repository:
+https://github.com/rbriggs-cbt/DocuGener
+
+For issues or questions, please check the documentation in the docs/ folder
+or open an issue on GitHub.
+
+================================================================================
+LICENSE
+================================================================================
+
+This software is provided under the MIT License. See LICENSE file for details.
+
+================================================================================
+Enjoy creating your documentation with DocuGener!
+================================================================================
+
