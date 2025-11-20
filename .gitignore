@@ -13,9 +13,8 @@ app/venv/
 dist/
 build/
 app/build/
-app/dist/
-# Exception: Track the user guide
-!app/dist/HOW_TO_USE.txt
+# Track app/dist/ for distribution (executable and documentation)
+# app/dist/ - Now tracked for releases
 
 # PyInstaller
 *.spec.bak
