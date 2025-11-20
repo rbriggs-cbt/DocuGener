@@ -19,6 +19,21 @@ DocuGener helps you create step-by-step documentation by automatically capturing
 
 ## Setup
 
+### Docker Deployment (Quick Start)
+
+For a containerized deployment, see [DOCKER.md](DOCKER.md) for detailed instructions.
+
+```bash
+# Using Docker Compose
+docker-compose up -d --build
+
+# Access at http://localhost:5100
+```
+
+**Note:** Screenshot capture functionality is limited in Docker containers. For full functionality, use native installation below.
+
+### Native Installation
+
 ### Backend (Python)
 
 1. Navigate to the backend directory:
